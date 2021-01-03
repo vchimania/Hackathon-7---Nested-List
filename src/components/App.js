@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import "./../styles/App.css";
-import State from './State';
+
 
 // Do not alter the states const and values inside it.
 const states = [
@@ -156,10 +156,54 @@ const states = [
 ];
 
 function App() {
-  return (<div id="main">
-  {
-    states.map((state, idx) => <State stateObj={state} key={idx} idx={idx}/>)
+  const [city,setCity] = useState([]);
+  const [town,setTown] = useState([]);
+  const handleState = (idx) =>{
+    if(city.includes(idx)){
+      const index = city.indexOf(idx);
+      city.splice(index,1);
+      setCity([...city]);
+    }else{
+      city.push(idx);
+      setCity([...city]);
+    }
   }
-  </div>);
-}
+  const handleCity = (cidx) =>{
+    city.pop();
+    setCity([...city]);
+    if(town.includes(cidx)){
+      const index = town.indexOf(cidx);
+      town.splice(index,1);
+      setTown([...town]);
+    }else{
+      town.push(cidx);
+      setTown([...town]);
+    }
+  }
+  const handleTown =(tidx) =>{
+    town.pop();
+    setTown([...town]);
+  }
+  return (
+    <div id="main">
+      <ol>
+        {states.map((state,idx) =>(
+          <li id={"state"+(idx+1)} key={`${state}_${idx}`} onClick={() => handleState(idx)}>{state.name}
+          {city.includes(idx)?<ol>
+            {state.cities.map((cityName,cidx) => (<li id={"city"+(cidx+1)} key={`${cityName}_${cidx}`} onClick={()=> handleCity(`${idx}_${cidx}`)}>
+              {cityName.name}
+              {town.includes(`${idx}_${cidx}`)?<ol>
+                {cityName.towns.map((townName,tidx) => (<li id={"town" +(tidx+1)} key={`${townName}_${tidx}`} onClick={()=> handleTown(`${cidx}_${tidx}`)}>{townName.name}</li>))}
+              </ol>:null}
+            </li>
+            ))}
+          </ol>:null}
+          </li>
+        ))}
+      </ol>
+
+    </div>
+
+    );
+  }
 export default App;
